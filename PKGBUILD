@@ -1,7 +1,9 @@
+# Maintainer: oozyslug <oozyslug at gmail dot com>
 # Maintainer: chliny <chliny11 at gmail dot com>
+# Contributor: oozyslug <oozyslug at gmail dot com>
 
 pkgname=neobundle-git
-pkgver=2.1.812.g5e0a81a
+pkgver=4.0.15.gc6fa48c
 pkgrel=1
 pkgdesc="Ultimate Vim plugin manager inspired by Vundle"
 arch=('any')
@@ -10,39 +12,31 @@ license=('GPL')
 depends=('vim>=7.2.051')
 makedepends=('git')
 install=neobundle.install
-source=('neobundle::git+https://github.com/Shougo/neobundle.vim.git')
-sha512sums=('SKIP')
+source=('neobundle-git::git+https://github.com/Shougo/neobundle.vim.git'
+        'neobundle.vimrc'
+       )
+sha512sums=('SKIP'
+            '0f213143dca741957c9873fe881666b86b66fa285db6e3fdd85f4121596798169de6201b3660b1960602a0e6f2bc54ddb98a4ff42041e7ce59b08bd75190ec01'
+           )
 
 pkgver() {
-    cd "$srcdir/neobundle"
+    cd "$srcdir/$pkgname"
     git describe --tags | sed -E 's/^ver\.//;s/-/./g'
     
 }
 package() {
-  cd "$srcdir/neobundle"
+  cd "$srcdir/$pkgname"
 
-  instpath="$pkgdir/usr/share/vim/vimfiles"
-  mkdir -p $instpath
+  vimpath="${pkgdir}/usr/share/vim/vimfiles/"
 
-  mkdir -p $instpath/doc
-  cp -R ./doc $instpath
+  mkdir -p ${vimpath}/doc
+  cp -R doc ${vimpath}
 
-  mkdir -p $instpath/autoload
-  cp -R ./autoload $instpath
+  mkdir -p ${vimpath}/autoload
+  cp -R autoload ${vimpath}
 
-  mkdir -p $instpath/plugin
-  cp -R ./plugin $instpath
-
-  mkdir -p $instpath/bin
-  cp -R ./bin $instpath
-
-  mkdir -p $instpath/ffdetect
-  cp -R ./ftdetect $instpath
-
-  mkdir -p $instpath/syntax
-  cp -R ./syntax $instpath
-
-  mkdir -p "$pkgdir/usr/share/neobundle"
-  cp -R ./test  "$pkgdir/usr/share/neobundle/vimrc.sample"
+  install -Dm644 LICENSE-MIT.txt ${pkgdir}/usr/share/licenses/${pkgname}/LICENSE
+  install -Dm644 README.md ${pkgdir}/usr/share/doc/${pkgname}/README
+  install -Dm644 ${srcdir}/neobundle.vimrc ${pkgdir}/usr/share/neobundle/vimrc.sample
 }
 
